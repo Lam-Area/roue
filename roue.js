@@ -28,9 +28,9 @@ let currentRotation = 0;
 let isSpinning = false;
 
 const config = {
-    relance: { prob: 0.60, indices: [0, 4] },
-    lose: { prob: 0.33, indices: [1, 3, 5, 7] },
-    win: { prob: 0.07, indices: [2, 6] }
+    relance: { prob: 0.28, indices: [0, 4] },
+    lose: { prob: 0.695, indices: [1, 3, 5, 7] },
+    win: { prob: 0.025, indices: [2, 6] }
 };
 
 function triggerSpin() {
@@ -39,13 +39,17 @@ function triggerSpin() {
 
     const rand = Math.random();
     let selectedCategory;
+    let soundFile;
 
     if (rand <= config.relance.prob) {
         selectedCategory = config.relance.indices;
+        soundFile = 'haha.mp3';
     } else if (rand <= config.relance.prob + config.lose.prob) {
         selectedCategory = config.lose.indices;
+        soundFile = 'rip.mp3';
     } else {
         selectedCategory = config.win.indices;
+        soundFile = 'money.mp3';
     }
 
     const targetIndex = selectedCategory[Math.floor(Math.random() * selectedCategory.length)];
@@ -66,6 +70,12 @@ function triggerSpin() {
     currentRotation += spins + rotationDiff;
     
     wheel.style.transform = `rotate(${currentRotation}deg)`;
+
+    setTimeout(() => {
+        const finalAudio = new Audio(soundFile);
+        finalAudio.volume = 1;
+        finalAudio.play().catch(() => {});
+    }, 14500);
 
     setTimeout(() => {
         isSpinning = false;

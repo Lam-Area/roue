@@ -1,6 +1,7 @@
 const wheel = document.getElementById('wheel');
 const spinBtn = document.getElementById('spinBtn');
 const resetBtn = document.getElementById('resetBtn');
+const wheelContainer = document.getElementById('wheelContainer');
 
 const urlParams = new URLSearchParams(window.location.search);
 if (urlParams.get('widget') === 'true') {
@@ -15,21 +16,24 @@ if (urlParams.get('widget') === 'true') {
     
     document.getElementById('dashHeader').style.display = 'none';
     document.getElementById('configSection').style.display = 'none';
+    document.getElementById('spinBtn').style.display = 'none';
     
     const mainContent = document.getElementById('mainContent');
     mainContent.style.padding = '0';
+    
+    wheel.style.cursor = 'pointer';
 }
 
 let currentRotation = 0;
 let isSpinning = false;
 
 const config = {
-    relance: { prob: 0.60, indices: [0, 5] },
-    lose: { prob: 0.33, indices: [1, 3, 6] },
-    win: { prob: 0.07, indices: [2, 4, 7] }
+    relance: { prob: 0.60, indices: [0, 4] },
+    lose: { prob: 0.33, indices: [1, 3, 5, 7] },
+    win: { prob: 0.07, indices: [2, 6] }
 };
 
-spinBtn.addEventListener('click', () => {
+function triggerSpin() {
     if (isSpinning) return;
     isSpinning = true;
 
@@ -66,6 +70,13 @@ spinBtn.addEventListener('click', () => {
     setTimeout(() => {
         isSpinning = false;
     }, 15000);
+}
+
+spinBtn.addEventListener('click', triggerSpin);
+wheelContainer.addEventListener('click', () => {
+    if (urlParams.get('widget') === 'true') {
+        triggerSpin();
+    }
 });
 
 resetBtn.addEventListener('click', () => {

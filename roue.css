@@ -85,6 +85,7 @@ h1 {
     border-left: 15px solid transparent;
     border-right: 15px solid transparent;
     border-top: 25px solid #dc3545;
+    pointer-events: none;
 }
 
 .wheel-container {
@@ -114,10 +115,10 @@ h1 {
         #dc3545 45deg 90deg,
         #2ba150 90deg 135deg,
         #dc3545 135deg 180deg,
-        #2ba150 180deg 225deg,
-        #1a1a1a 225deg 270deg,
-        #dc3545 270deg 315deg,
-        #2ba150 315deg 360deg
+        #1a1a1a 180deg 225deg,
+        #dc3545 225deg 270deg,
+        #2ba150 270deg 315deg,
+        #dc3545 315deg 360deg
     );
 }
 
@@ -172,6 +173,7 @@ h1 {
     display: flex;
     justify-content: center;
     align-items: center;
+    pointer-events: none;
 }
 
 .center-circle img {

@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Roue Streamlabs</title>
+    <link rel="stylesheet" href="roue.css">
+</head>
+<body>
+    <div class="dashboard" id="mainDashboard">
+        <header class="header" id="dashHeader">
+            <div class="logo-area">
+                <span class="logo-icon"></span>
+                <h1>Roue à tourner</h1>
+            </div>
+            <button id="resetBtn" class="btn-reset">RÉINITIALISER</button>
+        </header>
+
+        <div class="main-content" id="mainContent">
+            <div class="wheel-section">
+                <div class="pointer"></div>
+                <div class="wheel-container">
+                    <div id="wheel" class="wheel">
+                        <div class="wheel-bg"></div>
+                        
+                        <div class="line" style="--i:0"></div>
+                        <div class="line" style="--i:1"></div>
+                        <div class="line" style="--i:2"></div>
+                        <div class="line" style="--i:3"></div>
+
+                        <div class="text-container" style="--i:0"><span>RELANCE</span></div>
+                        <div class="text-container" style="--i:1"><span>PERDU</span></div>
+                        <div class="text-container" style="--i:2"><span>AION 2</span></div>
+                        <div class="text-container" style="--i:3"><span>PERDU</span></div>
+                        <div class="text-container" style="--i:4"><span>AION 2</span></div>
+                        <div class="text-container" style="--i:5"><span>RELANCE</span></div>
+                        <div class="text-container" style="--i:6"><span>PERDU</span></div>
+                        <div class="text-container" style="--i:7"><span>AION 2</span></div>
+                        
+                        <div class="center-circle">
+                            <img src="milieu.gif" alt="Centre">
+                        </div>
+                    </div>
+                </div>
+                <button id="spinBtn" class="btn-spin">TOURNER</button>
+            </div>
+
+            <div class="config-section" id="configSection">
+                <h2>CONFIGURATION DE LA ROUE</h2>
+                <div class="config-box">
+                    <input type="text" value="PERDU" readonly>
+                    <input type="text" value="AION 2" readonly>
+                    <input type="text" value="RELANCE" readonly>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="roue.js"></script>
+</body>
+</html>

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Roue Streamlabs</title>
+    <title>Slot Machine L'Ordre</title>
     <link rel="stylesheet" href="roue.css">
 </head>
 <body>
@@ -11,50 +11,66 @@
         <header class="header" id="dashHeader">
             <div class="logo-area">
                 <span class="logo-icon"></span>
-                <h1>Roue à tourner</h1>
+                <h1>Configuration Système</h1>
             </div>
-            <button id="resetBtn" class="btn-reset">RÉINITIALISER</button>
+            <button id="resetBtn" class="btn-reset">RÉINITIALISER TOUT</button>
         </header>
 
         <div class="main-content" id="mainContent">
-            <div class="wheel-section">
-                <div class="pointer"></div>
-                <div class="wheel-container" id="wheelContainer">
-                    <div id="wheel" class="wheel">
-                        <div class="wheel-bg"></div>
-                        
-                        <div class="line" style="--i:0"></div>
-                        <div class="line" style="--i:1"></div>
-                        <div class="line" style="--i:2"></div>
-                        <div class="line" style="--i:3"></div>
+            <div class="slot-machine" id="slotContainer">
+                
+                <!-- Vidéo avec opacité ajustée -->
+                <video src="bg.mp4" autoplay loop muted playsinline class="slot-video-bg"></video>
+                
+                <!-- Images RM décoratives permanentes -->
+                <img src="rm.png" class="rm-deco rm-left" alt="">
+                <img src="rm.png" class="rm-deco rm-right" alt="">
 
-                        <div class="text-container" style="--i:0"><span>RELANCE</span></div>
-                        <div class="text-container" style="--i:1"><span>PERDU</span></div>
-                        <div class="text-container" style="--i:2"><span>AION 2</span></div>
-                        <div class="text-container" style="--i:3"><span>PERDU</span></div>
-                        <div class="text-container" style="--i:4"><span>RELANCE</span></div>
-                        <div class="text-container" style="--i:5"><span>PERDU</span></div>
-                        <div class="text-container" style="--i:6"><span>AION 2</span></div>
-                        <div class="text-container" style="--i:7"><span>PERDU</span></div>
-                        
-                        <div class="center-circle">
-                            <img src="milieu.gif" alt="Centre">
+                <div class="machine-content-wrapper">
+                    <div class="machine-top">
+                        <div class="jackpot-display">
+                            <span class="pulse-text">GIVEAWAY</span><br>
+                            <span class="sub-text">RM30100</span>
                         </div>
                     </div>
-                </div>
-                <button id="spinBtn" class="btn-spin">TOURNER</button>
-            </div>
 
-            <div class="config-section" id="configSection">
-                <h2>CONFIGURATION DE LA ROUE</h2>
-                <div class="config-box">
-                    <input type="text" value="PERDU (33%)" readonly>
-                    <input type="text" value="AION 2 (7%)" readonly>
-                    <input type="text" value="RELANCE (60%)" readonly>
+                    <div class="reels-glass">
+                        <div class="reels-container">
+                            <div class="reel"><div class="strip" id="strip1"></div></div>
+                            <div class="reel"><div class="strip" id="strip2"></div></div>
+                            <div class="reel"><div class="strip" id="strip3"></div></div>
+                            <div class="win-line"></div>
+                        </div>
+                    </div>
+
+                    <div class="legal-paytable">
+                        <div class="pay-col">
+                            <img src="lose.gif" class="shape-mini" alt="">
+                            <span class="lbl">PERDU</span>
+                            <span class="pct">78.3%</span>
+                        </div>
+                        <div class="pay-col">
+                            <img src="relaunch.gif" class="shape-mini" alt="">
+                            <span class="lbl">RELANCE</span>
+                            <span class="pct">20.0%</span>
+                        </div>
+                        <div class="pay-col">
+                            <img src="win.gif" class="shape-mini" alt="">
+                            <span class="lbl">AION 2</span>
+                            <span class="pct">1.7%</span>
+                        </div>
+                    </div>
+
+                    <div class="machine-bottom">
+                        <button id="spinBtn" class="spin-trigger">
+                            <div class="spin-inner">SPIN</div>
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
+    <script src="particles.js"></script>
     <script src="roue.js"></script>
 </body>
 </html>

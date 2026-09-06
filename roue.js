@@ -1,7 +1,13 @@
-const wheel = document.getElementById('wheel');
+const dashHeader = document.getElementById('dashHeader');
+const slotContainer = document.getElementById('slotContainer');
 const spinBtn = document.getElementById('spinBtn');
 const resetBtn = document.getElementById('resetBtn');
-const wheelContainer = document.getElementById('wheelContainer');
+
+const strips = [
+    document.getElementById('strip1'),
+    document.getElementById('strip2'),
+    document.getElementById('strip3')
+];
 
 const urlParams = new URLSearchParams(window.location.search);
 if (urlParams.get('widget') === 'true') {
@@ -10,80 +16,123 @@ if (urlParams.get('widget') === 'true') {
     
     const dashboard = document.getElementById('mainDashboard');
     dashboard.style.backgroundColor = 'transparent';
-    dashboard.style.border = 'none';
-    dashboard.style.boxShadow = 'none';
-    dashboard.style.width = 'auto';
     
-    document.getElementById('dashHeader').style.display = 'none';
-    document.getElementById('configSection').style.display = 'none';
-    document.getElementById('spinBtn').style.display = 'none';
+    if(dashHeader) dashHeader.style.display = 'none';
     
-    const mainContent = document.getElementById('mainContent');
-    mainContent.style.padding = '0';
-    
-    wheel.style.cursor = 'pointer';
+    slotContainer.style.cursor = 'pointer';
 }
 
-let currentRotation = 0;
 let isSpinning = false;
+let currentIndices = [0, 0, 0];
 
-const config = {
-    relance: { prob: 0.28, indices: [0, 4] },
-    lose: { prob: 0.695, indices: [1, 3, 5, 7] },
-    win: { prob: 0.025, indices: [2, 6] }
-};
+const baseSequence = ['perdu', 'relance', 'perdu', 'aion', 'relance', 'perdu'];
+
+function createSymbolElement(type) {
+    const wrapper = document.createElement('div');
+    wrapper.className = 'symbol';
+    const img = document.createElement('img');
+    img.className = 'symbol-img';
+    
+    if (type === 'aion') img.src = 'win.gif';
+    else if (type === 'relance') img.src = 'relaunch.gif';
+    else img.src = 'lose.gif';
+    
+    wrapper.appendChild(img);
+    return wrapper;
+}
+
+strips.forEach(strip => {
+    for(let i = 0; i < 100; i++) {
+        baseSequence.forEach(sym => {
+            strip.appendChild(createSymbolElement(sym));
+        });
+    }
+});
+
+function getRandomLoser() {
+    const symbols = ['perdu', 'relance', 'aion'];
+    let combo = [
+        symbols[Math.floor(Math.random() * 3)],
+        symbols[Math.floor(Math.random() * 3)],
+        symbols[Math.floor(Math.random() * 3)]
+    ];
+    
+    if (combo[0] === combo[1] && combo[1] === combo[2]) {
+        combo[2] = combo[2] === 'perdu' ? 'relance' : 'perdu';
+    }
+    
+    return combo;
+}
 
 function triggerSpin() {
     if (isSpinning) return;
     isSpinning = true;
 
     const rand = Math.random();
-    let selectedCategory;
-    let soundFile;
+    let resultType = '';
+    let soundFile = '';
 
-    if (rand <= config.relance.prob) {
-        selectedCategory = config.relance.indices;
-        soundFile = 'haha.mp3';
-    } else if (rand <= config.relance.prob + config.lose.prob) {
-        selectedCategory = config.lose.indices;
-        soundFile = 'rip.mp3';
-    } else {
-        selectedCategory = config.win.indices;
+    if (rand <= 0.017) {
+        resultType = 'win';
         soundFile = 'money.mp3';
+    } else if (rand <= 0.217) {
+        resultType = 'relance';
+        soundFile = 'haha.mp3';
+    } else {
+        resultType = 'lose';
+        soundFile = 'rip.mp3';
     }
 
-    const targetIndex = selectedCategory[Math.floor(Math.random() * selectedCategory.length)];
-    
-    const baseAngle = 45;
-    const offset = 22.5;
-    const targetAngle = targetIndex * baseAngle;
-    
-    const currentMod = currentRotation % 360;
-    const desiredMod = 360 - (targetAngle + offset);
-    
-    let rotationDiff = desiredMod - currentMod;
-    if (rotationDiff <= 0) {
-        rotationDiff += 360;
+    let finalSymbols = [];
+    if (resultType === 'win') {
+        finalSymbols = ['aion', 'aion', 'aion'];
+    } else if (resultType === 'relance') {
+        finalSymbols = ['relance', 'relance', 'relance'];
+    } else {
+        finalSymbols = getRandomLoser();
     }
-    
-    const spins = 15 * 360;
-    currentRotation += spins + rotationDiff;
-    
-    wheel.style.transform = `rotate(${currentRotation}deg)`;
+
+    strips.forEach((strip, index) => {
+        const targetSym = finalSymbols[index];
+        const symOffset = baseSequence.indexOf(targetSym);
+        
+        let targetIndex = currentIndices[index] + 30 + (index * 15);
+        
+        while (targetIndex % 6 !== symOffset) {
+            targetIndex++;
+        }
+        
+        currentIndices[index] = targetIndex;
+        const translateValue = targetIndex * 180;
+        
+        const duration = 5 + (index * 1.5);
+        
+        strip.style.transition = `transform ${duration}s cubic-bezier(0.1, 0.8, 0.1, 1)`;
+        strip.style.transform = `translateY(-${translateValue}px)`;
+    });
 
     setTimeout(() => {
         const finalAudio = new Audio(soundFile);
         finalAudio.volume = 1;
         finalAudio.play().catch(() => {});
-    }, 14500);
+        
+        if (resultType === 'relance' && typeof spawnParticles === 'function') {
+            spawnParticles(slotContainer);
+        }
+        
+    }, 8500);
 
     setTimeout(() => {
         isSpinning = false;
-    }, 15000);
+    }, 9000);
 }
 
-spinBtn.addEventListener('click', triggerSpin);
-wheelContainer.addEventListener('click', () => {
+spinBtn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    triggerSpin();
+});
+
+slotContainer.addEventListener('click', () => {
     if (urlParams.get('widget') === 'true') {
         triggerSpin();
     }
@@ -91,10 +140,9 @@ wheelContainer.addEventListener('click', () => {
 
 resetBtn.addEventListener('click', () => {
     if (isSpinning) return;
-    currentRotation = 0;
-    wheel.style.transition = 'none';
-    wheel.style.transform = `rotate(0deg)`;
-    setTimeout(() => {
-        wheel.style.transition = 'transform 15s cubic-bezier(0.1, 0.85, 0.1, 1)';
-    }, 50);
+    currentIndices = [0, 0, 0];
+    strips.forEach(strip => {
+        strip.style.transition = 'none';
+        strip.style.transform = `translateY(0px)`;
+    });
 });

@@ -41,8 +41,10 @@ function createSymbolElement(type) {
     return wrapper;
 }
 
+// OPTIMISATION : On génère seulement 20 séquences (120 images) au lieu de 100.
+// C'est largement suffisant grâce au Silent Reset, et OBS respirera mieux.
 strips.forEach(strip => {
-    for(let i = 0; i < 100; i++) {
+    for(let i = 0; i < 20; i++) {
         baseSequence.forEach(sym => {
             strip.appendChild(createSymbolElement(sym));
         });
@@ -57,6 +59,7 @@ function getRandomLoser() {
         symbols[Math.floor(Math.random() * 3)]
     ];
     
+    // Sécurité pour s'assurer que ça ne fasse jamais 3 symboles identiques
     if (combo[0] === combo[1] && combo[1] === combo[2]) {
         combo[2] = combo[2] === 'perdu' ? 'relance' : 'perdu';
     }
@@ -68,6 +71,7 @@ function triggerSpin() {
     if (isSpinning) return;
     isSpinning = true;
 
+    // LES MATHS : Exactement 1.7%, 20.0%, 78.3%
     const rand = Math.random();
     let resultType = '';
     let soundFile = '';
@@ -96,7 +100,7 @@ function triggerSpin() {
         const targetSym = finalSymbols[index];
         const symOffset = baseSequence.indexOf(targetSym);
         
-        let targetIndex = currentIndices[index] + 30 + (index * 15);
+        let targetIndex = currentIndices[index] + 40 + (index * 15);
         
         while (targetIndex % 6 !== symOffset) {
             targetIndex++;
@@ -122,8 +126,16 @@ function triggerSpin() {
         
     }, 8500);
 
+    // SILENT RESET (Rembobinage secret à la fin du Spin pour rendre la machine infinie)
     setTimeout(() => {
         isSpinning = false;
+        strips.forEach((strip, index) => {
+            const symOffset = currentIndices[index] % 6;
+            // On remonte le rouleau en haut (avec une marge de 6 pour cacher le bord)
+            currentIndices[index] = symOffset + 6; 
+            strip.style.transition = 'none'; // Désactive l'animation pour le rembobinage
+            strip.style.transform = `translateY(-${currentIndices[index] * 180}px)`; // Remonte instantanément
+        });
     }, 9000);
 }
 
@@ -140,9 +152,9 @@ slotContainer.addEventListener('click', () => {
 
 resetBtn.addEventListener('click', () => {
     if (isSpinning) return;
-    currentIndices = [0, 0, 0];
+    currentIndices = [6, 6, 6];
     strips.forEach(strip => {
         strip.style.transition = 'none';
-        strip.style.transform = `translateY(0px)`;
+        strip.style.transform = `translateY(-${6 * 180}px)`;
     });
 });
